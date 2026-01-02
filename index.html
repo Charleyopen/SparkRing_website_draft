@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkRing™ - Smart Recording Ring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            color: #1a1a1a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 40px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .nav-logo .tm {
+            font-size: 9px;
+            vertical-align: super;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-size: 15px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.6;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #1a1a1a;
+            padding: 14px 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            box-sizing: border-box;
+            min-width: 140px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        /* 主横幅 */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            z-index: 2;
+            position: relative;
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 60px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .hero h1 .hero-brand {
+            font-size: 112px;
+        }
+
+        .hero-subscription {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .hero-subscription-form {
+            display: flex;
+            gap: 12px;
+            max-width: 650px;
+            align-items: center;
+        }
+
+        .hero-subscription-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .hero-subscription-input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .hero-subscription-submit {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .hero-subscription-submit:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .app-download-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .app-download-btn {
+            display: inline-block;
+            transition: all 0.3s;
+            opacity: 0.9;
+        }
+
+        .app-download-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .app-download-btn img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .hero-slogan {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 30px !important;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            box-sizing: border-box;
+            min-width: 140px;
+            height: 48px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .hero-image {
+            margin-top: 60px;
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            object-fit: contain;
+        }
+
+        .hero-image video {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            object-fit: contain;
+        }
+
+        /* 产品介绍视频区域 */
+        .video-section {
+            padding: 100px 40px;
+            text-align: center;
+            background: white;
+        }
+
+        .video-section h2 {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .video-section p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .video-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            background: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 80vh;
+        }
+
+        .video-placeholder {
+            max-width: 1200px;
+            margin: 0 auto;
+            aspect-ratio: 16/9;
+            background: #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 18px;
+        }
+
+        /* 产品展示 */
+        .products {
+            padding: 100px 40px;
+            background: #f8f9fa;
+        }
+
+        .products-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .products-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .products-header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 16px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-content {
+            padding: 40px;
+        }
+
+        .product-content h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .product-content p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .product-link {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-link:hover {
+            opacity: 0.7;
+        }
+
+        /* Tech Specs Section */
+        .tech-specs {
+            padding: 100px 40px;
+            background: white;
+        }
+
+        .tech-specs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .description-section h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        .description-section p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .specs-section h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        .specs-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .spec-value {
+            color: #666;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .tm {
+            font-size: 0.45em;
+            vertical-align: super;
+            font-weight: 400;
+        }
+
+        /* Marketing Sections */
+        .target-audience {
+            padding: 100px 40px;
+            background: #f8f9fa;
+        }
+
+        .target-audience-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .target-audience-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .target-audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .audience-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .audience-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .audience-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .audience-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .audience-list li {
+            font-size: 16px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .audience-list li:last-child {
+            border-bottom: none;
+        }
+
+        .audience-list li::before {
+            content: "• ";
+            color: #1a1a1a;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .usp-section {
+            padding: 100px 40px;
+            background: white;
+        }
+
+        .usp-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .usp-header h2 {
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .usp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .usp-card {
+            padding: 40px 30px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            transition: transform 0.3s;
+        }
+
+        .usp-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .usp-card h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .usp-card-image {
+            width: 100%;
+            max-width: 500px;
+            margin: 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .usp-card-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .feature-card-image {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px auto 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .use-case-section {
+            padding: 100px 40px;
+            background: #ffffff;
+        }
+
+        .use-case-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .use-case-image {
+            position: relative;
+            border-radius: 16px;
+            overflow: visible;
+        }
+
+        .use-case-image-wrapper {
+            position: relative;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .use-case-image-item.layer-1 {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .use-case-image-item.layer-2 {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .use-case-image-item.layer-3 {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        .use-case-image-item.layer-4 {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .use-case-image-item.layer-5 {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .use-case-image-item.layer-6 {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .use-case-image-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+
+        .use-case-image-item img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+        }
+
+        .use-case-image-item {
+            transition: transform 0.3s ease;
+        }
+
+        .use-case-image-item:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .use-case-content {
+            text-align: left;
+        }
+
+        .use-case-content h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .use-case-content p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .use-case-app-buttons {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .use-case-app-btn {
+            display: inline-block;
+            transition: all 0.3s;
+            opacity: 0.9;
+        }
+
+        .use-case-app-btn:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .use-case-app-btn img {
+            height: 65px;
+            width: auto;
+            display: block;
+        }
+
+        /* Newsletter Subscription */
+        .newsletter-section {
+            padding: 100px 40px;
+            background: white;
+            text-align: center;
+        }
+
+        .newsletter-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .newsletter-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .newsletter-header p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .newsletter-submit {
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .newsletter-submit:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .features-scenarios {
+            padding: 100px 40px;
+            background: #f8f9fa;
+        }
+
+        .features-scenarios-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-scenarios-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .scenario-card h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .scenario-description {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1a1a1a;
+        }
+
+        .scenario-details {
+            display: grid;
+            gap: 20px;
+        }
+
+        .scenario-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .scenario-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .scenario-detail-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .scenario-detail-value {
+            color: #666;
+            font-size: 16px;
+            text-align: right;
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .pain-points {
+            padding: 100px 40px;
+            background: white;
+        }
+
+        .pain-points-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .pain-points-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .pain-points-header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pain-points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pain-point-card {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 16px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .pain-point-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .pain-point-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 功能特性 */
+        .features {
+            padding: 100px 40px;
+            background: #f8f9fa;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .features-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .features-header p {
+            font-size: 20px;
+            color: #666;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid-horizontal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .features-grid-horizontal .feature-card {
+            padding: 20px;
+        }
+
+        .features-grid-horizontal .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .features-grid-horizontal .feature-card p {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .features-grid-horizontal .feature-card-image {
+            margin: 15px auto 0;
+        }
+
+        .product-render-section {
+            padding: 60px 40px;
+            background: white;
+        }
+
+        .product-render-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .product-render-item {
+            max-width: 70%;
+            margin: 0 auto;
+        }
+
+        .product-render-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .promotion-section {
+            padding: 150px 40px 150px 20px;
+            background: #f8f9fa;
+            position: relative;
+            overflow: visible;
+            min-height: 700px;
+        }
+
+        .promotion-section::before {
+            display: none;
+        }
+
+        .promotion-image {
+            position: relative;
+            width: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .promotion-image img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border: none;
+            box-shadow: none;
+        }
+
+        .promotion-section::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 30%;
+            height: 60%;
+            transform: translateY(-50%);
+            background-image: url('CES.png');
+            background-size: contain;
+            background-position: center left;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .promotion-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 3;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: center;
+            padding-left: 0;
+        }
+
+        .promotion-header {
+            text-align: left;
+            padding-left: 0;
+            margin-left: 0;
+        }
+
+        .promotion-header h2 {
+            font-size: 56px;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+        }
+
+        .promotion-header p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .promotion-items {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .promotion-item {
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border-left: 4px solid #1a1a1a;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .promotion-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .promotion-item h3 {
+            font-size: 24px;
+            margin: 0;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .promotion-image {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .promotion-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .carousel-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background: #333;
+        }
+
+        .carousel-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: #1a1a1a;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* 用户故事 */
+        .stories {
+            padding: 100px 40px;
+            background: #f8f9fa;
+        }
+
+        .stories-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .stories-header h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .stories-header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .stories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .stories-slider {
+            display: flex;
+            gap: 40px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+        }
+
+        .stories-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .stories-slider::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .stories-slider::-webkit-scrollbar-thumb {
+            background: #999;
+            border-radius: 4px;
+        }
+
+        .story-card {
+            min-width: 500px;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            scroll-snap-align: start;
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 24px;
+        }
+
+        .story-info h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .story-info p {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .story-content {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 媒体报道 */
+        .press {
+            padding: 100px 40px;
+            background: white;
+            text-align: center;
+        }
+
+        .press h2 {
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .press-quote {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 24px;
+            font-style: italic;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: #000000;
+            color: white;
+            padding: 80px 40px 40px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-section h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .social-links a {
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 4px;
+        }
+
+        .social-links a img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .social-links a:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        .footer-app-section {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding-left: 20px;
+        }
+
+        .footer-app-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .footer-app-btn {
+            display: inline-block;
+            transition: all 0.3s;
+            opacity: 0.9;
+        }
+
+        .footer-app-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .footer-app-btn img {
+            height: 55px;
+            width: auto;
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 20px;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .nav-logo {
+                font-size: 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-actions {
+                gap: 10px;
+                margin-left: auto;
+            }
+
+            .btn-secondary,
+            .btn-primary {
+                padding: 10px 16px;
+                font-size: 14px;
+                min-width: 110px;
+                height: 40px;
+            }
+
+            .hero {
+                margin-top: 70px;
+                min-height: 80vh;
+                padding: 40px 20px;
+            }
+
+            .hero-content {
+                padding: 30px 20px;
+                border-radius: 16px;
+                max-width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .hero h1 .hero-brand {
+                font-size: 48px;
+            }
+
+            .hero-slogan {
+                font-size: 16px;
+                margin-bottom: 25px !important;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-subscription {
+                margin-top: 30px;
+            }
+
+            .hero-subscription-form {
+                flex-direction: column;
+                gap: 10px;
+                max-width: 100%;
+            }
+
+            .hero-subscription-input {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .hero-subscription-submit {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .app-download-buttons {
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .app-download-btn img {
+                height: 40px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-specs {
+                padding: 60px 20px;
+            }
+
+            .tech-specs-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .description-section h2,
+            .specs-section h2 {
+                font-size: 32px;
+                margin-bottom: 20px;
+            }
+
+            .description-section p {
+                font-size: 16px;
+            }
+
+            .spec-item {
+                padding: 12px 0;
+            }
+
+            .spec-label,
+            .spec-value {
+                font-size: 14px;
+            }
+
+            .product-render-section {
+                padding: 40px 20px;
+            }
+
+            .product-render-item {
+                max-width: 100%;
+            }
+
+            .features {
+                padding: 60px 20px;
+            }
+
+            .features-header {
+                margin-bottom: 40px;
+            }
+
+            .features-header h2 {
+                font-size: 32px;
+            }
+
+            .features-header p {
+                font-size: 16px;
+            }
+
+            .features-grid-horizontal {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .features-grid-horizontal .feature-card {
+                padding: 20px;
+            }
+
+            .features-grid-horizontal .feature-card h3 {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
+            .features-grid-horizontal .feature-card p {
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            .video-section {
+                padding: 60px 20px;
+            }
+
+            .video-section h2 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .video-section p {
+                font-size: 16px;
+            }
+
+            .promotion-section {
+                padding: 60px 20px;
+                min-height: auto;
+            }
+
+            .promotion-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .promotion-header {
+                text-align: left;
+            }
+
+            .promotion-header h2 {
+                font-size: 32px;
+                margin-bottom: 30px;
+            }
+
+            .promotion-header p {
+                font-size: 16px;
+            }
+
+            .promotion-items {
+                gap: 15px;
+            }
+
+            .promotion-item {
+                padding: 15px 20px;
+            }
+
+            .promotion-item h3 {
+                font-size: 16px;
+            }
+
+            .promotion-image {
+                position: relative;
+                width: 100%;
+                margin-top: 30px;
+                justify-content: center;
+            }
+
+            .promotion-image img {
+                transform: none;
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .promotion-section::after {
+                width: 20%;
+                height: 40%;
+                opacity: 0.2;
+            }
+
+            .use-case-section {
+                padding: 60px 20px;
+            }
+
+            .use-case-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .use-case-content h2 {
+                font-size: 32px;
+                text-align: left;
+            }
+
+            .use-case-content p {
+                font-size: 16px;
+                text-align: left;
+            }
+
+            .use-case-image-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .use-case-image-item {
+                aspect-ratio: 1 / 1;
+            }
+
+            .use-case-image-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .feature-card-image img {
+                width: 100%;
+                height: auto;
+            }
+
+            .video-container {
+                border-radius: 8px;
+            }
+
+            .use-case-image-item.layer-1,
+            .use-case-image-item.layer-2,
+            .use-case-image-item.layer-3,
+            .use-case-image-item.layer-4,
+            .use-case-image-item.layer-5,
+            .use-case-image-item.layer-6 {
+                transform: none;
+                grid-column: auto;
+                grid-row: auto;
+            }
+
+            .use-case-app-buttons {
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .use-case-app-btn img {
+                height: 50px;
+            }
+
+            .newsletter-section {
+                padding: 60px 20px;
+            }
+
+            .newsletter-header h2 {
+                font-size: 32px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .newsletter-submit {
+                width: 100%;
+            }
+
+            .footer {
+                padding: 60px 20px 30px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-section h3 {
+                font-size: 18px;
+            }
+
+            .footer-section ul li {
+                font-size: 14px;
+            }
+
+            .footer-app-buttons {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .footer-app-btn img {
+                height: 45px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .target-audience-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .usp-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pain-points-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-card {
+                min-width: 100%;
+            }
+        }
+
+        /* 占位图片样式 */
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">SparkRing<span class="tm">TM</span></a>
+        <ul class="nav-links">
+            <li><a href="#products">Products</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#event">Event</a></li>
+            <li><a href="#stories">Stories</a></li>
+            <li><a href="#support">Support</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn-secondary">Pre Order Now</button>
+            <a href="#shop" class="btn-primary">Shop Now</a>
+        </div>
+    </nav>
+
+    <!-- 主横幅 -->
+    <section class="hero">
+        <video class="hero-video-bg" autoplay muted loop playsinline>
+            <source src="spark3Dvideo.mp4" type="video/mp4">
+        </video>
+        <div class="hero-content">
+            <h1><span class="hero-brand">SparkRing<span class="tm">TM</span></span><br>Spark, Spark, Done.</h1>
+            <p class="hero-slogan" style="text-align: left;">Introducing the world's first AI voice ring and fingertip workflow engine, SparkRing<span class="tm">TM</span>. Capture inspiration the moment it strikes—just move your finger. Coming soon.</p>
+            <div class="hero-subscription">
+                <form class="hero-subscription-form" onsubmit="event.preventDefault(); return false;">
+                    <input type="email" class="hero-subscription-input" placeholder="Enter your email" required>
+                    <button type="submit" class="hero-subscription-submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Specs -->
+    <section class="tech-specs" id="products">
+        <div class="tech-specs-container">
+            <div class="description-section">
+                <h2>Description</h2>
+                <p>SparkRing<span class="tm">TM</span> is the world's first voice smart ring and fingertip workflow engine. At its core is a self-developed real-time cognitive fusion engine—a next-generation AI algorithm system that integrates voice recognition, semantic understanding, intent reasoning, and structured knowledge generation. It captures sound the moment you speak and automatically organizes it into clear, structured, executable workflows, making your workflow smoother.</p>
+                <p style="margin-top: 20px;">SparkRing<span class="tm">TM</span> doesn't require extra attention—it frees up space for your attention. A cleaner, lighter daily life starts with SparkRing<span class="tm">TM</span>.</p>
+                <div class="product-render-section" style="padding: 40px 0 0 0; background: transparent;">
+                    <div class="product-render-container">
+                        <div class="product-render-item">
+                            <img src="第一版样机3D渲染图/10002.png" alt="SparkRing Product Render">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="specs-section">
+                <h2>Tech Specs</h2>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">Size:</span>
+                        <span class="spec-value">8mm x 2.5mm x 18.6mm (*8diff)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Color:</span>
+                        <span class="spec-value">Deep Blue / Black / Gray</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Weight:</span>
+                        <span class="spec-value">2.8g</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Microphone:</span>
+                        <span class="spec-value">1 MEMS</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Battery:</span>
+                        <span class="spec-value">24mah</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Continuous Recording Time:</span>
+                        <span class="spec-value">8h</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Stand-by Time:</span>
+                        <span class="spec-value">4-6 days</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Connect:</span>
+                        <span class="spec-value">BLE</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Storage:</span>
+                        <span class="spec-value">45 minutes audio</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Port:</span>
+                        <span class="spec-value">Magnetic port</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why SparkRing -->
+    <section class="features" id="features">
+        <div class="features-header">
+            <h2>Why Spark Ring ?</h2>
+            <p>Experience the power of fingertip workflow.</p>
+        </div>
+        <div class="features-grid-horizontal">
+            <div class="feature-card">
+                <h3>Inspiration Notes & Personalized Workflow</h3>
+                <p>Capture fleeting thoughts instantly. Just move your finger. A powerful organization system. Lights up your workflow.</p>
+                <div class="feature-card-image">
+                    <img src="ui002.jpg" alt="Inspiration Notes & Workflow Interface">
+                </div>
+            </div>
+            <div class="feature-card">
+                <h3>Daily Scheduling & Instant Reminders</h3>
+                <p>One sentence creates tasks, reminders, and schedules. Never forget important moments. Captures and reminds you.</p>
+                <div class="feature-card-image">
+                    <img src="ui003.jpg" alt="Scheduling & Reminders Interface">
+                </div>
+            </div>
+            <div class="feature-card">
+                <h3>Voice to Notes & Faster Than Phone & Apps</h3>
+                <p>Voice automatically becomes organized notes. Just speak freely.  Lift your hand to record, speak and capture instantly.</p>
+                <div class="feature-card-image">
+                    <img src="ui007.png" alt="Voice to Notes & Fast Recording Interface">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Introduction Video -->
+    <section class="video-section" id="stories">
+        <h2>Spark, Spark, Done.</h2>
+        <div class="video-container">
+            <video controls autoplay muted loop playsinline>
+                <source src="spark3Dvideo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- Promotion Section -->
+    <section class="promotion-section" id="event">
+        <div class="promotion-container">
+            <div class="promotion-header">
+                <h2>Special Event</h2>
+                <div class="promotion-items">
+                    <div class="promotion-item">
+                        <h3>Christmas Special @ CES</h3>
+                    </div>
+                    <div class="promotion-item">
+                        <h3>SparkRing<span class="tm">TM</span> x Gravity</h3>
+                    </div>
+                    <div class="promotion-item">
+                        <h3>Kickstarter Pre-order Perk</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="promotion-image">
+                <img src="联名展出.png" alt="SparkRing x Gravity Collaboration">
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Case -->
+    <section class="use-case-section">
+        <div class="use-case-container">
+            <div class="use-case-image">
+                <div class="use-case-image-wrapper">
+                    <div class="use-case-image-item layer-1">
+                        <img src="应用1.png" alt="SparkRing Use Case 1">
+                    </div>
+                    <div class="use-case-image-item layer-2">
+                        <img src="应用2.png" alt="SparkRing Use Case 2">
+                    </div>
+                    <div class="use-case-image-item layer-3">
+                        <img src="应用3.png" alt="SparkRing Use Case 3">
+                    </div>
+                    <div class="use-case-image-item layer-4">
+                        <img src="应用4.png" alt="SparkRing Use Case 4">
+                    </div>
+                    <div class="use-case-image-item layer-5">
+                        <img src="应用5.png" alt="SparkRing Use Case 5">
+                    </div>
+                    <div class="use-case-image-item layer-6">
+                        <img src="应用6.png" alt="SparkRing Use Case 6">
+                    </div>
+                </div>
+            </div>
+            <div class="use-case-content">
+                <h2>Everyday Application</h2>
+                <p>SparkRing<span class="tm">TM</span> is born for those moments when inspiration strikes—fleeting thoughts, things to remember, tasks being handled simultaneously, even when your hands are busy.</p>
+                <p>To free your hands and liberate your mind, SparkRing<span class="tm">TM</span> helps you instantly capture these fleeting moments, allowing you to focus on what matters most.</p>
+                <div class="use-case-app-buttons">
+                    <a href="#" class="use-case-app-btn" title="Download on App Store">
+                        <img src="applestpre.png" alt="Download on App Store">
+                    </a>
+                    <a href="#" class="use-case-app-btn" title="Get it on Google Play">
+                        <img src="googleplay.png" alt="Get it on Google Play">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="support">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Store</h3>
+                <ul>
+                    <li><a href="#">SparkRing<span class="tm">TM</span> Standard</a></li>
+                    <li><a href="#">SparkRing<span class="tm">TM</span> Pro</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#">Customization</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Technology</h3>
+                <ul>
+                    <li><a href="#">Microphone Array</a></li>
+                    <li><a href="#">AI Noise Reduction</a></li>
+                    <li><a href="#">Bluetooth Connectivity</a></li>
+                    <li><a href="#">Custom Design</a></li>
+                    <li><a href="#">Multiple Materials</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Partners</h3>
+                <ul>
+                    <li><a href="#">Find a Store</a></li>
+                    <li><a href="#">Partner Login</a></li>
+                    <li><a href="#">Business Solutions</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Support Center</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Warranty Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3 style="margin-bottom: 15px;">Follow Us:</h3>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><img src="fb.png" alt="Facebook"></a>
+                    <a href="#" title="X (Twitter)"><img src="x.png" alt="X"></a>
+                    <a href="#" title="Instagram"><img src="ins.png" alt="Instagram"></a>
+                    <a href="#" title="YouTube"><img src="youtube.png" alt="YouTube"></a>
+                    <a href="#" title="TikTok"><img src="tk.png" alt="TikTok"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© SparkRing<span class="tm">TM</span> 2025. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+    </script>
+</body>
+</html>
